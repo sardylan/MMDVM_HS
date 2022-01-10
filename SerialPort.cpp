@@ -239,7 +239,7 @@ void CSerialPort::getVersion()
 
 uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 {
-  if (length < 23U)
+  if (length < 21U)
     return 4U;
 
   bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
@@ -294,7 +294,12 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   uint8_t p25TXLevel    = data[12U];
   uint8_t nxdnTXLevel   = data[15U];
   uint8_t pocsagTXLevel = data[17U];
-  uint8_t m17TXLevel    = data[21U];
+
+  uint8_t m17TXLevel;
+  if (length >= 22U)
+    m17TXLevel    = data[21U];
+  else
+    m17TXLevel    = 0;
 
   io.setDeviations(dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, m17TXLevel, pocsagTXLevel, ysfLoDev);
 
