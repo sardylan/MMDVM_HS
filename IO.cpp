@@ -73,32 +73,32 @@ void CIO::selfTest()
 {
   bool ledValue = false;
   uint32_t ledCount = 0U;
-  uint32_t blinks = 0U;
+  uint32_t ledStep = 0U;
 
-  while(true) {
+  while (true) {
     ledCount++;
     delay_us(1000U);
 
-    if(ledCount >= 125U) {
+    if (ledCount >= 25U) {
+      ledStep++;
       ledCount = 0U;
+    }
+
+    if (ledStep % 3 == 0)
       ledValue = !ledValue;
 
-      LED_pin(!ledValue);
-      PTT_pin(ledValue);
-      DSTAR_pin(ledValue);
-      DMR_pin(ledValue);
-      YSF_pin(ledValue);
-      P25_pin(ledValue);
-      NXDN_pin(ledValue);
-      M17_pin(ledValue);
-      POCSAG_pin(ledValue);
-      COS_pin(ledValue);
+    LED_pin(ledValue);
 
-      blinks++;
+    COS_pin((ledStep >= 1 && ledStep < 11) || (ledStep >= 27 && ledStep < 37));
+    PTT_pin((ledStep >= 2 && ledStep < 12) || (ledStep >= 26 && ledStep < 36));
+    DSTAR_pin((ledStep >= 3 && ledStep < 13) || (ledStep >= 25 && ledStep < 35));
+    DMR_pin((ledStep >= 4 && ledStep < 14) || (ledStep >= 24 && ledStep < 34));
+    YSF_pin((ledStep >= 5 && ledStep < 15) || (ledStep >= 23 && ledStep < 33));
+    P25_pin((ledStep >= 6 && ledStep < 16) || (ledStep >= 22 && ledStep < 32));
+    NXDN_pin((ledStep >= 7 && ledStep < 17) || (ledStep >= 21 && ledStep < 31));
 
-      if(blinks > 5U)
-        break;
-    }
+    if (ledStep >= 40U)
+      break;
   }
 }
 
@@ -426,7 +426,7 @@ void CIO::setMode(MMDVM_STATE modemState)
 #if defined(USE_ALTERNATE_M17_LEDS)
   if (modemState != STATE_M17) {
 #endif
-    YSF_pin(modemState    == STATE_DSTAR);
+    YSF_pin(modemState    == STATE_YSF);
     P25_pin(modemState    == STATE_P25);
 #if defined(USE_ALTERNATE_M17_LEDS)
   }
